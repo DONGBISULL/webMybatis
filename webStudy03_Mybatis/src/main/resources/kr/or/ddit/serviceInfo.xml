@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceInfo>
+	<menuList>
+		<menu>
+			<code>STANDARD</code>
+			<link>/02/standard.jsp</link>		
+			<text>표준 JSP</text>
+		</menu>
+		<menu>
+			<code>CALENDAR</code>
+			<link>/04/calendar.jsp</link>		
+			<text>달력</text>
+		</menu>
+		<menu>
+			<code>FACTORIAL</code>
+			<link>/05/factorialT.jsp</link>		
+			<text>팩토리얼연산</text>
+		</menu>
+		<menu>
+			<code>CALCULATOR</code>
+			<link>/10/calculatorT.jsp</link>		
+			<text>사칙연산</text>
+			
+		</menu>
+		<menu>
+			<code>JDBC</code>
+			<href>/11/jdbcDesc.do</href>
+			<text>JDBC</text>
+		</menu>
+	</menuList>
+</serviceInfo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.prop.dao.DataBasePropertyDAO">
+ 
+ <sql id="searchFrag">
+		<trim prefix="WHERE" prefixOverrides="OR">
+			<if test="detailSearch!=null">
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.getPropertyName)">
+					OR INSTR(PROPERTY_NAME ,#{detailSearch.propertyName}) >0
+				</if>
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.getPropertyValue)">
+				 	OR INSTR(PROPERTY_VALUE ,#{detailSearch.propertyValue}) >0
+				</if>
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.getDescription)">
+				 	OR INSTR(Description ,#{detailSearch.description}) >0
+				</if>
+			</if>
+		</trim>
+ 
+ </sql>
+ 
+ 
+ 
+	<select id="selectDataBasePropertyList"
+		parameterType="PagingVO" resultType="DataBasePropertyVO">
+ 
+	 SELECT A.* 
+		FROM
+			(	select property_name , property_value, description ,ROWNUM RNUM
+				from DATABASE_PROPERTIES
+				<!-- OGNL -->
+				<!-- prefixOverrides 잘못 들어간 or 연산자 없애준다 -->
+				<include refid="searchFrag"></include>
+				) A
+			 
+			WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+		 
+	 
+	</select>
+
+	<select id="selectTotalDataProperty" parameterType="PagingVO" resultType="int">
+	select count(*)
+	from DATABASE_PROPERTIES
+	 
+	</select>
+	
+	<select id="selectTotalRecord" parameterType="PagingVO" resultType="int">
+	select count(*)
+	from DATABASE_PROPERTIES
+	<include refid="searchFrag"></include>
+	
+	</select>
+
+ 
+</mapper>

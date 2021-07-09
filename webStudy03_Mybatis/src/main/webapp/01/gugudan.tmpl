@@ -1,0 +1,30 @@
+<style>
+table{
+border-collapse: collapse;
+background-color: skyblue;
+font-weight: bold;
+color : white;
+}
+ 
+th , td{
+padding: 5px;
+
+	border : 1px solid black;
+
+}
+
+</style>
+
+<html>
+	<body>
+		<form>
+			<!-- action 값 생략시 자기 자신에게 돌아감 tmpl이 아닌 실제로 돌아가고 있는 서블릿으로 돌아간다  -->
+			최소 단 :<input type="number" name="minDan"/>
+			최대 단 :<input type="number" name="maxDan"/>
+			<input type="submit" value="전송">
+		</form>
+		<table >
+			#{gugudan}
+		</table>
+	</body>
+</html>
