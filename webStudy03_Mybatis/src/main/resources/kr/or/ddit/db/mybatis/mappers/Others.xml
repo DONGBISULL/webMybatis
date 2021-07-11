@@ -9,4 +9,6 @@
 		SELECT BUYER_ID, BUYER_NAME, BUYER_LGU
 		FROM BUYER
 	</select>
+	
+	
 </mapper>

@@ -16,7 +16,7 @@ import kr.or.ddit.vo.ZiptbVO;
 public interface MemberDAO {
 	public int insertMember(MemberVO member);
 	/**
-	 * 페이징 처리를 위해ㅐ total recode 조회 
+	 * 페이징 처리를 위해ㅐ total record 조회 
 	 * @param PagingVO
 	 * @return
 	 */

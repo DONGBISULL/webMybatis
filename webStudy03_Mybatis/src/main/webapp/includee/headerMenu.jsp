@@ -1,23 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Company name</a>
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="${pageContext.request.contextPath }">Company name</a>
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <ul class="navbar-nav px-3">
+  <ul class="nav px-3">
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="/webStudy03_Mybatis/member/memberList.do">회원 관리</a>
+      <a class="nav-link" href="${pageContext.request.contextPath }/fileBrowser.do">파일브라우저</a>
+    </li>
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="${pageContext.request.contextPath }/employee/empList.do">조직도</a>
+    </li>
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="${pageContext.request.contextPath }/member/memberList.do">회원관리</a>
+    </li>
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="${pageContext.request.contextPath }/prod/prodList.do">상품관리</a>
+    </li>
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="${pageContext.request.contextPath }/buyer/buyerList.do">거래처관리</a>
     </li>
   </ul>
   <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">상품관리</a>
-    </li>
-  </ul>
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Sign out</a>
-    </li>
+  	<c:set var="authMember" value="${sessionScope.authMember }"/>
+  	<c:choose>
+  		<c:when test="${empty authMember }">
+		    <li class="nav-item text-nowrap">
+		      <a class="nav-link" href="${pageContext.request.contextPath }/login/loginForm.jsp">Sign in</a>
+		    </li>
+  		</c:when>
+  		<c:otherwise>
+		    <li class="nav-item text-nowrap">
+		      <a class="nav-link" href="${pageContext.request.contextPath }/login/logout.do">Sign out</a>
+		    </li>
+  		</c:otherwise>
+  	</c:choose>
   </ul>
 </nav>

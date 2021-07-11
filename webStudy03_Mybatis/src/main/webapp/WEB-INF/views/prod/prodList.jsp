@@ -74,6 +74,7 @@
 				location.href = gopage;
 			}
 		});	
+		
 		$(document).ajaxComplete(function(event, xhr, options){
 			searchForm.get(0).reset();
 		}).ajaxError(function(event, xhr, options, error){
@@ -82,6 +83,7 @@
 			console.log(options);
 			console.log(error);
 		});
+		
 		let prodBuyer = $("select[name='prodBuyer']");
 		$("select[name='prodLgu']").on("change", function(){
 			let lgu = $(this).val();
@@ -100,7 +102,9 @@
 			let prodId = prod.prodId;
 			location.href = "${pageContext.request.contextPath }/prod/prodView.do?what="+prodId;
 		});
+		
 		let pagingArea = $("#pagingArea");
+		
 		function makeTrTag(prod){
 			return $("<tr>").append(
 				$("<td>").html(prod.prodName),		

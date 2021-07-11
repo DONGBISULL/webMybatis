@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.buyer.dao.BuyerDAO">
+<!--
+ trim  PREFIX 실행될 쿼리문의 가장 앞에 붙여준다
+ 	   prefixOverrides : 실행될 쿼리문안 쿼리  중 가장 앞에 해당하는 ㅜㅁㄴ자들이 있으면 자동으로 지워줌	 	
+-->
+<sql id="pagingCondition" >
+	FROM BUYER LEFT OUTER JOIN LPROD ON (BUYER_LGU = LPROD_GU)
+	 <trim prefix=" WHERE" prefixOverrides="and">
+		<if test="detailSearch != null">
+	    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.buyerLgu)">
+			    and BUYER_LGU = #{detailSearch.buyerLgu}
+	    	</if>
+	    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.buyerName)">
+			    and INSTR(BUYER_NAME ,#{detailSearch.buyerName}) > 0 
+	    	</if>
+	    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.buyerAdd1)">
+	    		and	INSTR(BUYER_ADD1 ,'#{detailSearch.buyerAdd1}) > 0
+	    	</if>
+ 		</if>
+	</trim>	
+</sql>
+
+
+<select id="selectBuyerList" parameterType="PagingVO" resultType="BuyerVO" >
+WITH BUYERLIST AS (
+		SELECT 
+			    BUYER_ID,    BUYER_NAME,    BUYER_LGU,      LPROD_NM ,     BUYER_BANK,    BUYER_BANKNO,
+			    BUYER_BANKNAME,    BUYER_ZIP,    BUYER_ADD1,    BUYER_ADD2,    BUYER_COMTEL,
+			    BUYER_FAX,    BUYER_MAIL,    BUYER_CHARGER,    BUYER_TELEXT     
+	   		<include refid="pagingCondition"/> 
+	    ORDER BY BUYER_LGU 
+	)
+    SELECT A.*
+    	 FROM 
+		    (SELECT ROWNUM AS RNUM , BUYERLIST.*
+		    FROM BUYERLIST
+		   	 ) A
+    WHERE RNUM between #{startRow} AND #{endRow}
+
+</select>
+
+	<select id="selectTotalCount" parameterType="PagingVO" resultType="int">
+		select count(*)
+	<include refid="pagingCondition"/> 
+	</select>
+
+	<resultMap id="BuyerMap"  type="BuyerVO" autoMapping="true" >
+		<id property="buyerId" column="BUYER_ID"/>
+		<!-- 콜렉션으로 가져오려면 일단 vo에 prodList를 가져올 수 있는 요소가 있어야 됨 실제로 private List<buyerVO> 추갈 후 가능해짐 -->
+			<collection property="prodList" ofType="ProdVO"  autoMapping="true">
+				<id property="prodId" column="PROD_ID" />
+			</collection>
+	</resultMap>
+	
+	<select id="seledctBuyerDetail" parameterType="String" resultMap="BuyerMap" >
+			    
+		WITH PRLG AS (
+			SELECT 
+				    LPROD_NM   ,PROD_NAME , PROD_LGU   , PROD_BUYER,
+				    PROD_ID,  PROD_PRICE,    PROD_SALE,  PROD_COST  ,TO_CHAR(PROD_INSDATE, 'YYYY-MM-DD') PROD_INSDATE
+				    FROM PROD LEFT OUTER JOIN LPROD ON (PROD_LGU = LPROD_GU)     
+			ORDER BY PROD_ID             
+		) , BUYERLIST AS (
+		    SELECT                 
+		            BUYER_ID,    BUYER_NAME,    BUYER_LGU,    BUYER_BANK,    BUYER_BANKNO,
+		            BUYER_BANKNAME,    BUYER_ZIP,    BUYER_ADD1,    BUYER_ADD2,    BUYER_COMTEL,
+		            BUYER_FAX,    BUYER_MAIL,    BUYER_CHARGER,    BUYER_TELEXT ,ROWNUM RNUM , PRLG.*
+		    		FROM BUYER LEFT OUTER JOIN PRLG ON(PROD_BUYER = BUYER_ID)
+		    WHERE BUYER_ID= #{buyerId}
+		)
+		SELECT  BUYERLIST.* 
+			FROM BUYERLIST  
+	
+	</select>
+
+	<insert id="insertBuyer" parameterType="BuyerVO">
+		<selectKey order="BEFORE" resultType="String" keyProperty="buyerId">
+			SELECT  #{buyerLgu}||LPAD( NVL(TO_NUMBER(SUBSTR( MAX(BUYER_ID),5)),0)+1 ,2,'0')
+			FROM BUYER
+			WHERE BUYER_LGU = #{buyerLgu}
+		</selectKey>
+		INSERT INTO buyer (
+			    BUYER_ID,    BUYER_NAME,    BUYER_LGU,    BUYER_BANK,
+			    BUYER_BANKNO,    BUYER_BANKNAME,    BUYER_ZIP,    BUYER_ADD1,
+			    BUYER_ADD2,    BUYER_COMTEL,    BUYER_FAX,    BUYER_MAIL,
+			    BUYER_CHARGER,    BUYER_TELEXT
+	) VALUES (
+				#{buyerId, jdbcType=VARCHAR}       ,
+				#{buyerName, jdbcType=VARCHAR}     ,
+				#{buyerLgu, jdbcType=VARCHAR}      ,
+				#{buyerBank, jdbcType=VARCHAR}     ,
+				#{buyerBankno, jdbcType=VARCHAR}   ,
+				#{buyerBankname, jdbcType=VARCHAR} ,
+				#{buyerZip, jdbcType=VARCHAR}      ,
+				#{buyerAdd1, jdbcType=VARCHAR}     ,
+				#{buyerAdd2, jdbcType=VARCHAR}     ,
+				#{buyerComtel, jdbcType=VARCHAR}   ,
+				#{buyerFax, jdbcType=VARCHAR}      ,
+				#{buyerMail, jdbcType=VARCHAR}     ,
+				#{buyerCharger, jdbcType=VARCHAR}  ,
+				#{buyerTelext, jdbcType=VARCHAR}
+					
+	)
+	</insert>
+	<update id="deleteBuyer">
+		 
+	
+	</update>
+
+
+	<update id="updateBuyer" parameterType="BuyerVO"  >
+	UPDATE BUYER
+	    SET
+	 		#{buyerName, jdbcType=VARCHAR}     ,
+			#{buyerLgu, jdbcType=VARCHAR}      ,
+			#{buyerBank, jdbcType=VARCHAR}     ,
+			#{buyerBankno, jdbcType=VARCHAR}   ,
+			#{buyerBankname, jdbcType=VARCHAR} ,
+			#{buyerZip, jdbcType=VARCHAR}      ,
+			#{buyerAdd1, jdbcType=VARCHAR}     ,
+			#{buyerAdd2, jdbcType=VARCHAR}     ,
+			#{buyerComtel, jdbcType=VARCHAR}   ,
+			#{buyerFax, jdbcType=VARCHAR}      ,
+			#{buyerMail, jdbcType=VARCHAR}     ,
+			#{buyerCharger, jdbcType=VARCHAR}  ,
+			#{buyerTelext, jdbcType=VARCHAR}
+		WHERE
+	    	buyer_id =${buyerId}
+	
+	</update>
+</mapper>
