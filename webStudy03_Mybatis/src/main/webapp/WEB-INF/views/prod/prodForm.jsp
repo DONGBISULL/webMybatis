@@ -11,6 +11,13 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
 </head>
 <body>
+<c:if test="${not empty message }">
+	<script type="text/javascript">
+		alert("${message}")
+	</script>
+</c:if>
+
+
 	<form method="post" id="prodForm">
 	<table class="table table-bordered">
 		<tr>
@@ -146,6 +153,7 @@
 				value="${prod.prodMileage }" /><label id="prodMileage-error"
 				class="error" for="prodMileage">${errors.prodMileage}</label></td>
 		</tr>
+	
 		<tr>
 			<td colspan="2">
 				<input type="submit" value="저장" class="btn btn-success"/>
@@ -160,7 +168,8 @@
 	<script type="text/javascript">
 		$(function(){
 			$("#prodForm").validate();
-			let prodBuyer = $("select[name='prodBuyer']");
+			
+			let prodBuyer = $("select[name='prodBuyer']").val("${prod.prodBuyer}").prop("selected" , true );
 			$("select[name='prodLgu']").on("change", function(){
 				let lgu = $(this).val();
 				if(lgu){
@@ -170,13 +179,8 @@
 				}else{
 					prodBuyer.find("option").show();
 				}
-			});
-			$(".controlBtn").on("click", function(){
-				let gopage = $(this).data("gopage");
-				if(gopage){
-					location.href = gopage;
-				}
-			});	
+			}).val("${prod.prodLgu}").change();
+		 
 		});
 	</script>
 <jsp:include page="/includee/footer.jsp" />	

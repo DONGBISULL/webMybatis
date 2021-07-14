@@ -55,6 +55,8 @@ public class LoginCheckServletT extends HttpServlet {
 		}*/
 		return valid ;
 	}
+	
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//1 파라미터 확보
@@ -80,7 +82,7 @@ public class LoginCheckServletT extends HttpServlet {
 		 }else {
 			//3 인증 
 			 try {
-				//지금 받은 건 java  
+				/*//지금 받은 건 java  
 				 MessageDigest md = MessageDigest.getInstance("SHA-512");
 				 //java를 바이트 형식으로 바꿈 
 				 byte[] input = mem_pass.getBytes();
@@ -88,7 +90,7 @@ public class LoginCheckServletT extends HttpServlet {
 				 byte[] encrypted = md.digest(input); 
 				 mem_pass = Base64.getEncoder().encodeToString(encrypted);
 				 param.setMemPass(mem_pass);  
-				 
+				 */
 				 Object resultValue = service.authenticate(param);
 				 if(resultValue instanceof MemberVO) {
 					 // 1)  성공 : welcome page 이동  (redirection)
@@ -108,7 +110,7 @@ public class LoginCheckServletT extends HttpServlet {
 						session.setAttribute("failId",mem_id);
 						session.setAttribute("message", "비밀번호 오류");
 					}
-			 }catch (UserNotFoundException | NoSuchAlgorithmException e) {
+			 }catch (UserNotFoundException e) {
 				 goPage="/login/loginFormT.jsp";
 				 redirect = true;
 				session.setAttribute("message", e.getMessage());

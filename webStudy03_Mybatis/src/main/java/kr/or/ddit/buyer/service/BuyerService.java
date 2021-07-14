@@ -25,4 +25,6 @@ public interface BuyerService {
 	public ServiceResult modifyBuyer(BuyerVO buyer);
 	 
 	public BuyerVO retrieveBuyerDetail(String buyerId);
+	
+	public ServiceResult deleteBuyer(BuyerVO buyerVO);
 }

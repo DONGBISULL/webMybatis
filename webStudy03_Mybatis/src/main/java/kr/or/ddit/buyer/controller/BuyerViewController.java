@@ -14,7 +14,7 @@ import kr.or.ddit.buyer.service.BuyerService;
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.vo.BuyerVO;
 @WebServlet("/buyer/buyerView.do")
-public class BuyerViewServlet extends HttpServlet{
+public class BuyerViewController extends HttpServlet{
 	BuyerService service = new  BuyerServiceImpl();
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

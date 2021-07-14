@@ -2,6 +2,8 @@ package kr.or.ddit.buyer.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,20 +17,32 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.sun.el.stream.Stream;
+
 import kr.or.ddit.buyer.dao.BuyerDAO;
 import kr.or.ddit.buyer.service.BuyerService;
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.enumtype.ServiceResult;
+import kr.or.ddit.enumtype.StatusType;
 import kr.or.ddit.prod.dao.OthersDAO;
 import kr.or.ddit.prod.dao.OthersDAOImpl;
+import kr.or.ddit.utils.ValidatorUtils;
 import kr.or.ddit.vo.BuyerVO;
 
 @WebServlet("/buyer/buyerInsert.do")
 public class BuyerInsertController extends HttpServlet {
 	OthersDAO otherDAO = new OthersDAOImpl();
 	BuyerService service = new BuyerServiceImpl();
-
+	
+	
 	private void setAttribute(HttpServletRequest req) {
+	 	List<StatusType> statusList = new ArrayList<>();
+		for (StatusType StatusTypes :  StatusType.class.getEnumConstants()) {
+			//System.out.println(StatusTypes.getStatusName());
+			statusList.add(StatusTypes);
+		} 
+	//	System.out.println(statusList);
+		req.setAttribute("statusList", statusList);
 		List<Map<String, Object>> lprodList = otherDAO.selectLprodList();
 		req.setAttribute("lprodList", lprodList);
 		req.setAttribute("command", "INSERT");
@@ -57,19 +71,19 @@ public class BuyerInsertController extends HttpServlet {
 		// 파라미터 맵 받기
 		BuyerVO buyer = new BuyerVO();
 		Map<String, String[]> paramMap = req.getParameterMap();
-
+		
 		req.setAttribute("buyer", buyer);
-
+		buyer.setBuyerStatus(StatusType.HOLDING.getStatusName());
 		try {
 			BeanUtils.populate(buyer, paramMap);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			 throw new ServletException(e);
 		}
-
-		Map<String, String> errors = new HashMap<>();
+		
+		Map<String, List<String>> errors = new HashMap<>();
 		req.setAttribute("errors", errors);
 		// 파라미터 검증
-		boolean valid = validate(buyer, errors);
+		boolean valid = new ValidatorUtils<>().validate(buyer, errors);
 		// 메세지 보내기
 		String message = null;
 		String viewName = null;
@@ -103,29 +117,6 @@ public class BuyerInsertController extends HttpServlet {
 
 	}
 
-	private boolean validate(BuyerVO buyer, Map<String, String> errors) {
-		boolean valid = true;
-		if (StringUtils.isBlank(buyer.getBuyerName())) {
-			valid = false;
-			errors.put("buyerName", "거래처 이름 누락");
-		}
-		if (StringUtils.isBlank(buyer.getBuyerLgu())) {
-			valid = false;
-			errors.put("buyerLgu", "거래처 분류 누락");
-		}
-		if (StringUtils.isBlank(buyer.getBuyerComtel())) {
-			valid = false;
-			errors.put("buyerComtel", "거래처 전화번호 누락");
-		}
-		if (StringUtils.isBlank(buyer.getBuyerFax())) {
-			valid = false;
-			errors.put("buyerFax", "거래처 팩스 번호 누락");
-		}
-		if (StringUtils.isBlank(buyer.getBuyerMail())) {
-			valid = false;
-			errors.put("buyerMail", "거래처 메일 누락");
-		}
-		return valid;
-	}
+	 
 
 }

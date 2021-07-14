@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -23,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.ddit.enumtype.ServiceResult;
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.utils.ValidatorUtils;
+import kr.or.ddit.validate.groups.UpdateGroup;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.OperateVO;
 
@@ -33,12 +36,17 @@ import kr.or.ddit.vo.OperateVO;
 @WebServlet("/member/memberUpdate.do")
 public class MemberUpdateController extends HttpServlet {
 	private MemberService service = MemberServiceImpl.getInstance();
-
+	
+	private void addAttribute(HttpServletRequest req) {
+		req.setAttribute("command", "UPDATE");		
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		MemberVO authMember = (MemberVO) req.getSession().getAttribute("authMember");
 		MemberVO member = service.retrieveMember(authMember.getMemId());
-
+		addAttribute(req);
+		
 		req.setAttribute("member", member);
 
 		String dest = "/WEB-INF/views/member/memberForm.jsp";
@@ -53,7 +61,7 @@ public class MemberUpdateController extends HttpServlet {
 		//to_char(포매팅) ==> select로 가져올 때는 String
 		//to_date && to_number(parsing) ==> 수정할 때는 to_date로 파싱을 해서 넘김
 		req.setCharacterEncoding("utf-8");
-		
+		addAttribute(req);
 		MemberVO member = new MemberVO();
 		Map<String,String[]> parameterMap = req.getParameterMap();
 		
@@ -61,7 +69,6 @@ public class MemberUpdateController extends HttpServlet {
 	 
 		//member.setMemId(req.getParameter("memId"));
 		
-		Map<String,String> errors = new HashMap<>();
 		
 		try {
 			BeanUtils.populate(member, parameterMap); 
@@ -69,10 +76,15 @@ public class MemberUpdateController extends HttpServlet {
 			throw new ServletException(e);
 		}
 		
+		
+		Map<String , List<String>> errors = new HashMap<>();
+		
+		
+		boolean valid = new ValidatorUtils<>().validate(member , errors , UpdateGroup.class);
 		req.setAttribute("errors", errors);
+		
 		ServiceResult result =	service.modifyMember(member);
 		
-		boolean valid = validate(member , errors);
 		String viewName = null;
 		String message = null;
 		if(valid) {
@@ -124,7 +136,7 @@ public class MemberUpdateController extends HttpServlet {
  * @return
  */
 
-	private boolean validate(MemberVO member  ,Map<String,String> errors) {
+	/*private boolean validate(MemberVO member  ,Map<String,String> errors) {
 		
 		boolean valid = true;
 		if(StringUtils.isBlank(member.getMemId())){ 
@@ -148,5 +160,5 @@ public class MemberUpdateController extends HttpServlet {
 				}
 		}
 		 return valid;
-	}
+	}*/
 }

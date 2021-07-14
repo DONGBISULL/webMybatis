@@ -49,7 +49,7 @@ public class BuyerDAOImpl implements BuyerDAO{
 	@Override
 	public int updateBuyer(BuyerVO buyerVO) {
 		 try(
-				SqlSession sqlSession = sqlSessionFactory.openSession();
+				SqlSession sqlSession = sqlSessionFactory.openSession(true);
 				){
 			 BuyerDAO 	mapper = sqlSession.getMapper(BuyerDAO.class);
 			return mapper.updateBuyer(buyerVO);
@@ -57,15 +57,19 @@ public class BuyerDAOImpl implements BuyerDAO{
 	}
 
 	@Override
-	public int deleteBuyer(String buyerId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteBuyer(BuyerVO buyerVO) {
+		try(
+				SqlSession sqlSession = sqlSessionFactory.openSession(true);
+				){
+			BuyerDAO	mapper = sqlSession.getMapper(BuyerDAO.class);
+			return mapper.deleteBuyer(buyerVO) ;
+		}
 	}
 
 	@Override
 	public BuyerVO seledctBuyerDetail(String buyerId) {
 		 try(
-				SqlSession sqlSession = sqlSessionFactory.openSession();
+				SqlSession sqlSession = sqlSessionFactory.openSession(true);
 				){
 			 BuyerDAO mapper = sqlSession.getMapper(BuyerDAO.class);
 			return mapper.seledctBuyerDetail(buyerId) ;

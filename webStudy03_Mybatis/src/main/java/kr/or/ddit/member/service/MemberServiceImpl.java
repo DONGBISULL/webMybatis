@@ -6,6 +6,7 @@ import kr.or.ddit.commons.UserNotFoundException;
 import kr.or.ddit.enumtype.ServiceResult;
 import kr.or.ddit.member.dao.MemberDAO;
 import kr.or.ddit.member.dao.MemberDaoImpl;
+import kr.or.ddit.utils.EncryptUtils;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ZiptbVO;
@@ -37,7 +38,9 @@ public class MemberServiceImpl implements MemberService {
 		ServiceResult result = null;
 		
 		if(dao.selectMemberDetail(member.getMemId())==null) {
-		
+			String plain = member.getMemPass();
+			String encoded = EncryptUtils.encryptSha512Base64(plain);
+			member.setMemPass(encoded);
 		int cnt = dao.insertMember(member);
 			if(cnt>0) {
 				result = ServiceResult.OK;

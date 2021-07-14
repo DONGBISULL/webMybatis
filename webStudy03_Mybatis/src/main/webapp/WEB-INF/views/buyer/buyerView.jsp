@@ -11,7 +11,10 @@
 </head>
 <body>
 	<table class="table">
-	 
+	 <tr>
+			<th>거래처 아이디</th>
+			<td>${buyer.buyerId }</td>
+		</tr>
 		<tr>
 			<th>거래처 이름</th>
 			<td>${buyer.buyerName }</td>
@@ -20,6 +23,12 @@
 			<th>거래처 분류</th>
 			<td>${buyer.lprodNm }</td>
 		</tr>
+		<tr>
+		 <tr>
+			<th>거래처 거래 상태</th>
+			<td>
+			${buyer.buyerStatus }
+		 	</td>
 		<tr>
 			<th>거래처 은행</th>
 			<td>${buyer.buyerBank }</td>
@@ -64,6 +73,24 @@
 			<th>Telext</th>
 			<td>${buyer.buyerTelext }</td>
 		</tr>
+		
+		<tr>
+			<td colspan="2">
+					<c:url value="/buyer/buyerUpdate.do" var="updateURL">
+						<c:param name="what" value="${buyer.buyerId }" />
+					</c:url>
+				<a class="btn btn-primary" href="${updateURL }">수정</a> 
+				<input type="button" value="삭제" class ="btn btn-danger controlBtn" id="deleteBtn" /> 
+				<a class="btn btn-secondary" href="#" onclick="history.back();">뒤로가기</a> 
+				<input type="button" value="목록으로" class="btn btn-secondary controlBtn" 
+					data-gopage="${pageContext.request.contextPath }/buyer/buyerList.do" />
+				<form id="deleteForm" method="Post" action="${pageContext.request.contextPath }/buyer/buyerdelete.do">
+					<input type="hidden" value="${buyer.buyerId }" name="what">
+				</form>
+			
+			</td>
+		</tr>
+		
 		<tr>
 			<th>상품 정보</th>
 			<td>
@@ -106,5 +133,25 @@
 		</tr>
 	</table>
 	<jsp:include page="/includee/footer.jsp" />
+	
+	
+	<script type="text/javascript">
+	
+	let deleteForm = $("#deleteForm");
+	let deleteBtn = $("#deleteBtn")
+	
+	
+	deleteBtn.on("click" , function(){
+		let check = confirm("삭제하시겠습니까?")
+		
+		if(check){
+		deleteForm.submit();
+		}else{
+			return false;
+		}
+		
+	})
+	
+	</script>
 </body>
 </html>

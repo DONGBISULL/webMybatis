@@ -66,14 +66,10 @@
 </form>
 <script src="${pageContext.request.contextPath }/resources/js/paging.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/prod/prodForm.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$(".controlBtn").on("click", function(){
-			let gopage = $(this).data("gopage");
-			if(gopage){
-				location.href = gopage;
-			}
-		});	
+	 
 		
 		$(document).ajaxComplete(function(event, xhr, options){
 			searchForm.get(0).reset();
@@ -84,17 +80,12 @@
 			console.log(error);
 		});
 		
-		let prodBuyer = $("select[name='prodBuyer']");
-		$("select[name='prodLgu']").on("change", function(){
-			let lgu = $(this).val();
-			if(lgu){
-				prodBuyer.find("option").hide();
-				prodBuyer.find("option."+lgu).show();
-				prodBuyer.find("option:first").show();
-			}else{
-				prodBuyer.find("option").show();
-			}
-		});
+		let prodBuyer = $("select[name='prodBuyer']").val("${pagingVO.detailSearch.prodBuyer}");
+	 
+		$("select[name='prodLgu']").othersSelect({
+			buyerTag : prodBuyer
+		}).val("${pagingVO.detailSearch.prodLgu}").change();
+		
 		
 		let tbody = $("table>tbody").on("click", "tr" ,function(){
 			let prod = $(this).data("prod");

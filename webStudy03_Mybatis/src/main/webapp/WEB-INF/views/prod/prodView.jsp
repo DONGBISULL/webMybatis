@@ -109,6 +109,18 @@
 			<td>${prod.prodMileage }</td>
 		</tr>
 		<tr>
+			<td colspan="2">
+					<c:url value="/prod/prodUpdate.do" var="updateURL">
+						<c:param name="what" value="${prod.prodId }" />
+					</c:url>
+				<a class="btn btn-primary" href="${updateURL }">수정</a> 
+				<a class="btn btn-secondary" href="#" onclick="history.back();">뒤로가기</a> 
+				<input type="button" value="목록으로" class="btn btn-secondary controlBtn" 
+					data-gopage="${pageContext.request.contextPath }/prod/prodList.do " />
+			</td>
+		</tr>
+		
+		<tr>
 			<th>구매자 정보</th>
 			<td>
 				<table class="table table-bordered">

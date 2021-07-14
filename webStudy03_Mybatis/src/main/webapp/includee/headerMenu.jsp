@@ -28,7 +28,7 @@
   	<c:choose>
   		<c:when test="${empty authMember }">
 		    <li class="nav-item text-nowrap">
-		      <a class="nav-link" href="${pageContext.request.contextPath }/login/loginForm.jsp">Sign in</a>
+		      <a class="nav-link" href="${pageContext.request.contextPath }/login/loginFormT.jsp">Sign in</a>
 		    </li>
   		</c:when>
   		<c:otherwise>

@@ -34,20 +34,28 @@ public class BuyerServiceImpl implements BuyerService {
 
 	@Override
 	public ServiceResult modifyBuyer(BuyerVO buyer) {
+		dao.seledctBuyerDetail(buyer.getBuyerId());
 		int cnt = dao.updateBuyer(buyer);
-		ServiceResult result = null; 
-	
-		
-		
-		return null;
+		ServiceResult result =  ServiceResult.FAIL;
+		if(cnt>0)
+			result = ServiceResult.OK;
+		return result;
 	}
 
 	@Override
 	public BuyerVO retrieveBuyerDetail(String buyerId) {
 		BuyerVO buyerVO = dao.seledctBuyerDetail(buyerId);
-		
-		
 		return buyerVO;
+	}
+
+	@Override
+	public ServiceResult deleteBuyer(BuyerVO buyerVO) {
+		dao.seledctBuyerDetail(buyerVO.getBuyerId());
+		int cnt = dao.deleteBuyer(buyerVO) ;
+		ServiceResult result =  ServiceResult.FAIL;
+		if(cnt>0)
+			result = ServiceResult.OK;
+		return result;
 	}
 
 	

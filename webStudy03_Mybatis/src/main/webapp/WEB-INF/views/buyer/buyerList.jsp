@@ -16,6 +16,11 @@
 <jsp:include page="/includee/preScript.jsp"></jsp:include>
 </head>
 <body>
+<c:if test="${not empty message }">
+	<script type="text/javascript">
+		alert("${message}")
+	</script>
+</c:if>
 <div id="searchUI" >
 <h3><a href="${pageContext.request.contextPath }/buyer/buyerList.do">거래처 리스트</a></h3>
 	<h4>Search UI</h4>

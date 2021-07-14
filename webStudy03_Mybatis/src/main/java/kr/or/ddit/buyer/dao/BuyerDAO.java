@@ -36,7 +36,7 @@ public interface BuyerDAO {
 	 *  업데이트
 	 * @param buyerId
 	 */
-	public int deleteBuyer(String buyerId);
+	public int deleteBuyer(BuyerVO buyerVO);
 	
 	
 	public BuyerVO seledctBuyerDetail(String buyerId);
